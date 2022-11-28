@@ -7,5 +7,5 @@ export const ProtectedRoute = () => {
   if (!keyToken) {
     return <Navigate to="/" replace />;
   }
-  return <Outlet />; // возвращать outlet из router DOM
+  return <Outlet />;
 };

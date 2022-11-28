@@ -5,7 +5,7 @@ export const getUsers = () =>
 
 export const getUser = (id) =>
   instance.get(`users/${id}`).then((response) => response.data.data);
-  // .then((response) => response.data.data);
+
 export const deleteUser = (userID) =>
   instance.delete(`users/${userID}`).then((response) => response);
 

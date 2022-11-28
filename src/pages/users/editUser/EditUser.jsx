@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import style from "./editUser.module.css";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,30 +6,17 @@ import { reselectUsers } from "../../../store/selectors";
 import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
 import { useForm } from "react-hook-form";
 import { editUser } from "../../../store/users/usersSlice";
-import { getUser } from "../../../API/user/instanceUsers";
 
 const EditUser = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
   const users = useSelector(reselectUsers);
-  let user = users?.find((user) => user.id === parseInt(id));
-
-  // const [user, setUser] = useState({});
-  // console.log('user: ', user);
-
-  // useEffect(() => {
-  //   const getUserAsync = async () => {
-  //     const data = await getUser(id)
-  //     setUser(data);
-  //   };
-  //   getUserAsync();
-  // }, []);
+  const user = users?.find((user) => user.id === parseInt(id));
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -131,7 +118,6 @@ const EditUser = () => {
           <input
             type="url"
             {...register("avatar", {
-              // required: "Введите ссылку на изображение!",
               minLength: 1,
               maxLength: {
                 value: 150,
@@ -154,6 +140,7 @@ const EditUser = () => {
 
         <div className={style.buttonWrapper}>
           <button type="submit">Изменить</button>
+
           <PagesNavButton buttonText="Назад" goTo="/usersList" />
         </div>
       </form>

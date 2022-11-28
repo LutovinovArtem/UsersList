@@ -112,7 +112,6 @@ const AddUser = () => {
           <input
             type="url"
             {...register("avatar", {
-              // required: "Введите ссылку на изображение!",
               minLength: 1,
               maxLength: {
                 value: 150,

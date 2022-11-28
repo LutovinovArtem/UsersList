@@ -5,22 +5,18 @@ import {
   postUser,
   putUser,
 } from "../../API/user/instanceUsers";
-// import { statusOK } from "../../API/responseStatus";
+import { statusNotOK } from "../../API/responseStatus";
 
 export const getUsers = createAsyncThunk(
   "users/getUsers",
-  async (_, { rejectWithValue, dispatch }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const users = await getUsersAPI();
 
-      // if (users.status !== statusOK) {
-      //   throw new Error("Error");
-      // }
-
-      if (users.length === 0) {
+      if (users.status === statusNotOK) {
         throw new Error("Error");
       }
-      // dispatch(addUser(users.config.data));
+
       return users;
     } catch (error) {
       return rejectWithValue(`getUsers - ${error.message}`);
@@ -34,7 +30,7 @@ export const deleteUser = createAsyncThunk(
     try {
       const response = await deleteUserAPI(id);
 
-      if (response.status !== 204) {
+      if (response.status === statusNotOK) {
         throw new Error("Error");
       }
 
@@ -52,7 +48,7 @@ export const addUserAsync = createAsyncThunk(
       const user = await postUser(value);
       console.log("response: ", user.config.data);
 
-      if (user.status !== 201) {
+      if (user.status === statusNotOK) {
         throw new Error("Error");
       }
 
@@ -69,7 +65,7 @@ export const editUser = createAsyncThunk(
     try {
       const user = await putUser(value, id);
 
-      if (user.status !== 201) {
+      if (user.status === statusNotOK) {
         throw new Error("Error");
       }
 
@@ -94,9 +90,6 @@ const usersSlice = createSlice({
     error: null,
   },
   reducers: {
-    // updateUsers: (state, { payload }) => {
-    //   state.users = payload;
-    // },
     removeUser: (state, { payload }) => {
       state.users = state.users.filter((user) => user.id !== payload);
     },
@@ -128,6 +121,6 @@ const usersSlice = createSlice({
   },
 });
 
-const { removeUser, addUser, updateUsers, changeUser } = usersSlice.actions;
+const { removeUser, addUser, changeUser } = usersSlice.actions;
 
 export default usersSlice.reducer;

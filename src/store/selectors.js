@@ -20,11 +20,3 @@ export const reselectIsLoading = createSelector(
     if (isLoading === true) return isLoading;
   }
 );
-
-// export const reselectUserById = createSelector(
-//   [selectUsers],
-//   (users, id) => {
-//     console.log('users1', users);
-//     // users.find(({ id: userID }) => userID === id);
-//   }
-// );

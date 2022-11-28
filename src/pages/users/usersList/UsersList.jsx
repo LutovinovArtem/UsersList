@@ -20,7 +20,7 @@ const UsersList = () => {
 
   useEffect(() => {
     dispatch(getUsers());
-  }, [dispatch]);
+  }, []);
 
   const handleDeleteClick = (id) => {
     dispatch(deleteUser(id));

@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import style from "./registration.module.css";
-import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { registration } from "../../../API/user/register";
 import { statusOK } from "../../../API/responseStatus";
+import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
 
 const Registration = () => {
   const onSubmit = (values) => {
     registration(values).then((response) => {
       if (response.status === statusOK) {
         console.log("РЕГИСТРАЦИЯ УСПЕШНА !");
-        // localStorage.setItem("token");
       }
     });
 
@@ -104,9 +103,8 @@ const Registration = () => {
           <button type="submit" disabled={!isValid} className={style.button}>
             Регистрация
           </button>
-          <Link to="/">
-            <button className={style.button}> Назад </button>
-          </Link>
+
+          <PagesNavButton buttonText="Назад" goTo="/" />
         </div>
         <br />
       </form>
