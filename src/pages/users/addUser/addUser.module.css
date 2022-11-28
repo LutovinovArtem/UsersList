@@ -1,0 +1,17 @@
+.html body {
+  margin: 0;
+}
+
+.formWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.buttonWrapper {
+  display: inline-flex;
+  flex-direction: row;
+}
+
