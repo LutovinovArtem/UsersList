@@ -16,3 +16,6 @@ export const postUser = (values) =>
   instance.post("users", values).then((response) => response);
 
 export const putUser = (values, id) => instance.put(`users/${id}`, values);
+
+export const getPages = () => 
+  instance.get("users").then((response) => response);

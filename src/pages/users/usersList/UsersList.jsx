@@ -11,6 +11,11 @@ import {
   reselectError,
   reselectIsLoading,
 } from "../../../store/users/selectors/usersSelectors";
+import { getPages } from "../../../store/pages/pagesSlice";
+import {
+  // selectTotalPages,
+  selectNumberOfAllUsers,
+} from "../../../store/pages/pagesSelectors";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -20,8 +25,13 @@ const UsersList = () => {
   const error = useSelector(reselectError);
   const isLoading = useSelector(reselectIsLoading);
 
+  const numberOfAllUsers = useSelector(selectNumberOfAllUsers);
+  // const totalPages = useSelector(selectTotalPages);
+  // const perPage = useSelector(selectPerPage);
+
   useEffect(() => {
-    dispatch(getUsers({ page: 1, per_page: 3 }));
+    dispatch(getUsers({ page: 1, per_page: 12 }));
+    dispatch(getPages());
   }, []);
 
   const handleDeleteClick = (id) => {
@@ -98,7 +108,18 @@ const UsersList = () => {
         <PagesNavButton buttonText="Добавить" goTo="/users/add" />
       </div>
 
-      <Table dataSource={users} columns={columns} />
+      <Table
+        dataSource={users}
+        columns={columns}
+        rowKey="id"
+        pagination={{
+          pageSize: 4, // кол-во элм на странице
+          total: numberOfAllUsers, // общее кол-во элм
+          // onChange: (page) => {
+          //   dispatch(getUsers({ page: 2, per_page: 6 }));
+          // },
+        }}
+      />
     </>
   );
 };

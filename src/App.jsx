@@ -14,7 +14,7 @@ import EditUser from "./pages/users/editUser/EditUser";
 function App() {
   return (
     <Router>
-      <Routes> 
+      <Routes>
         {/* название */}
         <Route element={<CheckToken />}>
           <Route path="/" element={<Login />} />
