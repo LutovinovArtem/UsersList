@@ -1,3 +1,3 @@
-export const statusOK = 200;
+export const STATUS_OK = 200;
 
-export const statusNotOK = 400;
+export const STATUS_NOT_OK  = 400;

@@ -1,7 +1,10 @@
 import { instance } from "../axios";
+import { createSearchParams } from "react-router-dom";
 
-export const getUsers = () =>
-  instance.get("users").then((response) => response.data.data);
+export const getUsers = (data) =>
+  instance
+    .get(`users?${createSearchParams(data)}`)
+    .then((response) => response.data.data);
 
 export const getUser = (id) =>
   instance.get(`users/${id}`).then((response) => response.data.data);

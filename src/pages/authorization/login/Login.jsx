@@ -1,38 +1,28 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import style from "./login.module.css";
-import { login } from "../../../API/user/login";
+import { useForm } from "react-hook-form";
+import { login } from "../../../store/authorization/loginSlice";
 import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onSubmit = (values) => {
-    login(values).then(({ data: { token } }) => {
-      localStorage.setItem("token", token);
-      navigate("/usersList");
-    });
-    reset();
+  const onSubmit = async (values) => {
+    await dispatch(login(values));
+    navigate("/users");
   };
 
-  const [passwordType, setPasswordType] = useState("password");
-  const [toggleText, setToggleText] = useState("show");
-
-  const togglePasswordType = () => {
-    if (passwordType === "password") {
-      setToggleText("hide");
-      setPasswordType("text");
-    } else {
-      setToggleText("show");
-      setPasswordType("password");
-    }
+  const [passwordShow, setPasswordShow] = useState(false);
+  const togglePassword = () => {
+    setPasswordShow(!passwordShow);
   };
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
@@ -72,7 +62,7 @@ const Login = () => {
           <br />
           <>
             <input
-              type={passwordType}
+              type={passwordShow ? "text" : "password"}
               {...register("password", {
                 required: "Введите пароль!",
                 minLength: 1,
@@ -82,14 +72,11 @@ const Login = () => {
                 },
               })}
             />
-            <button
-              className={style.toggleButton}
-              onClick={() => togglePasswordType()}
-            >
-              {toggleText}
-            </button>
           </>
         </label>
+        <button type="button" onClick={togglePassword}>
+          {passwordShow ? "Cкрыть" : "Показать"}
+        </button>
 
         <div style={{ height: 20 }}>
           {" "}
@@ -102,7 +89,6 @@ const Login = () => {
         </div>
 
         <div className={style.buttonWrapper}>
-          {/* Link не работает с submit */}
           <button type="submit" disabled={!isValid}>
             Авторизация
           </button>

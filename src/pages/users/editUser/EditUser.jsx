@@ -1,30 +1,67 @@
-import React from "react";
+import React, { useEffect } from "react";
 import style from "./editUser.module.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { reselectUsers } from "../../../store/selectors";
 import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
 import { useForm } from "react-hook-form";
-import { editUser } from "../../../store/users/usersSlice";
+import { Loader } from "../../../components/loader/Loader";
+import { editUser } from "../../../store/users/slices/usersSlice";
+import { getUser } from "../../../store/users/slices/userSlice";
+import {
+  selectUser,
+  selectUserError,
+  selectUserIsLoading,
+} from "../../../store/users/selectors/userSelectors";
 
 const EditUser = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const users = useSelector(reselectUsers);
-  const user = users?.find((user) => user.id === parseInt(id));
+  const user = useSelector(selectUser) || {};
+  const error = useSelector(selectUserError);
+  const isLoading = useSelector(selectUserIsLoading);
+
+  useEffect(() => {
+    reset({
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      avatar: user.avatar,
+    });
+  }, [user]);
+
+  useEffect(() => {
+    dispatch(getUser(id));
+  }, []);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "onChange",
+    defaultValues: {
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      avatar: user.avatar,
+    },
   });
 
-  const onSubmit = (values, id) => {
-    dispatch(editUser(values, id));
+  const onSubmit = (value) => {
+    dispatch(editUser({ value: value, id: id }));
+    navigate("/users");
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <h2> Error: {error}</h2>;
+  }
 
   return (
     <div className={style.formWrapper}>
@@ -35,8 +72,8 @@ const EditUser = () => {
           Почта:
           <br />
           <input
+            type="email"
             {...register("email", {
-              required: "Введите почту!",
               minLength: 1,
               maxLength: {
                 value: 150,
@@ -48,8 +85,6 @@ const EditUser = () => {
                 message: "Неправильный формат почты!",
               },
             })}
-            type="email"
-            defaultValue={`${user.email}`}
           />
           <br />
         </label>
@@ -65,14 +100,12 @@ const EditUser = () => {
           <br />
           <input
             {...register("firstName", {
-              required: "Введите имя!",
               minLength: 1,
               maxLength: {
                 value: 150,
                 message: "Максимальное число символов 128.",
               },
             })}
-            defaultValue={user.first_name}
           />
           <br />
         </label>
@@ -91,14 +124,12 @@ const EditUser = () => {
           <br />
           <input
             {...register("lastName", {
-              required: "Введите фамилию!",
               minLength: 1,
               maxLength: {
                 value: 150,
                 message: "Максимальное число символов 128.",
               },
             })}
-            defaultValue={user.last_name}
           />
           <br />
         </label>
@@ -124,7 +155,6 @@ const EditUser = () => {
                 message: "Максимальное число символов 128.",
               },
             })}
-            defaultValue={user.avatar}
           />
           <br />
         </label>
@@ -140,8 +170,7 @@ const EditUser = () => {
 
         <div className={style.buttonWrapper}>
           <button type="submit">Изменить</button>
-
-          <PagesNavButton buttonText="Назад" goTo="/usersList" />
+          <PagesNavButton buttonText="Назад" goTo="/users" />
         </div>
       </form>
     </div>

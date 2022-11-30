@@ -3,7 +3,7 @@ import style from "./addUser.module.css";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
-import { addUserAsync } from "../../../store/users/usersSlice";
+import { addUserAsync } from "../../../store/users/slices/usersSlice";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const AddUser = () => {
   });
 
   const onSubmit = (values) => {
+    console.log('values: ', values);
     dispatch(addUserAsync(values));
     reset();
   };
@@ -135,7 +136,7 @@ const AddUser = () => {
         <div className={style.buttonWrapper}>
           <button type="submit">Добавить</button>
 
-          <PagesNavButton buttonText="Назад" goTo="/usersList" />
+          <PagesNavButton buttonText="Назад" goTo="/users" />
         </div>
       </form>
     </div>

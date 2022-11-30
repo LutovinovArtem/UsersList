@@ -1,41 +1,32 @@
 import React, { useState } from "react";
 import style from "./registration.module.css";
 import { useForm } from "react-hook-form";
-import { registration } from "../../../API/user/register";
-import { statusOK } from "../../../API/responseStatus";
+import { registration } from "../../../store/authorization/registerSlice";
 import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Registration = () => {
-  const onSubmit = (values) => {
-    registration(values).then((response) => {
-      if (response.status === statusOK) {
-        console.log("РЕГИСТРАЦИЯ УСПЕШНА !");
-      }
-    });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    reset();
+  const onSubmit = async (values) => {
+    await dispatch(registration(values));
+    navigate("/users");
   };
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: "onBlur",
   });
 
-  const [passwordType, setPasswordType] = useState("password");
-  const [toggleText, setToggleText] = useState("show");
-
-  const togglePasswordType = () => {
-    if (passwordType === "password") {
-      setToggleText("hide");
-      setPasswordType("text");
-    } else {
-      setToggleText("show");
-      setPasswordType("password");
-    }
+  // Compound Components
+  const [passwordShow, setPasswordShow] = useState(false);
+  const togglePassword = () => {
+    setPasswordShow(!passwordShow);
   };
 
   return (
@@ -72,6 +63,7 @@ const Registration = () => {
           Пароль:
           <br />
           <input
+            type={passwordShow ? "text" : "password"}
             {...register("password", {
               required: "Введите пароль!",
               minLength: 1,
@@ -81,11 +73,8 @@ const Registration = () => {
               },
             })}
           />
-          <button
-            className={style.toggleButton}
-            onClick={() => togglePasswordType()}
-          >
-            {toggleText}
+          <button type="button" onClick={togglePassword}>
+            {passwordShow ? "Cкрыть" : "Показать"}
           </button>
         </label>
 

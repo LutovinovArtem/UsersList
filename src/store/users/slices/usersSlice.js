@@ -4,16 +4,16 @@ import {
   deleteUser as deleteUserAPI,
   postUser,
   putUser,
-} from "../../API/user/instanceUsers";
-import { statusNotOK } from "../../API/responseStatus";
+} from "../../../API/user/instanceUsers";
+import { STATUS_NOT_OK } from "../../../API/responseStatus";
 
 export const getUsers = createAsyncThunk(
   "users/getUsers",
-  async (_, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const users = await getUsersAPI();
+      const users = await getUsersAPI(data);
 
-      if (users.status === statusNotOK) {
+      if (users.status === STATUS_NOT_OK) {
         throw new Error("Error");
       }
 
@@ -30,7 +30,7 @@ export const deleteUser = createAsyncThunk(
     try {
       const response = await deleteUserAPI(id);
 
-      if (response.status === statusNotOK) {
+      if (response.status === STATUS_NOT_OK) {
         throw new Error("Error");
       }
 
@@ -46,9 +46,8 @@ export const addUserAsync = createAsyncThunk(
   async (value, { rejectWithValue, dispatch }) => {
     try {
       const user = await postUser(value);
-      console.log("response: ", user.config.data);
 
-      if (user.status === statusNotOK) {
+      if (user.status === STATUS_NOT_OK) {
         throw new Error("Error");
       }
 
@@ -65,13 +64,13 @@ export const editUser = createAsyncThunk(
     try {
       const user = await putUser(value, id);
 
-      if (user.status === statusNotOK) {
+      if (user.status === STATUS_NOT_OK) {
         throw new Error("Error");
       }
 
-      dispatch(changeUser(value));
+      dispatch(changeUser({...value, id}));
     } catch (error) {
-      return rejectWithValue(`addUser - ${error.message}`);
+      return rejectWithValue(`editUser - ${error.message}`);
     }
   }
 );
@@ -99,8 +98,7 @@ const usersSlice = createSlice({
     changeUser: (state, { payload }) => {
       state.users = state.users.forEach((user) => {
         if (user.id === payload.id) {
-          user = payload.value;
-          console.log('payload: ', payload);
+          user = payload;
         }
       });
     },
