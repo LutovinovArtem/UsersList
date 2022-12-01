@@ -2,8 +2,8 @@ import React from "react";
 import style from "./addUser.module.css";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
 import { addUserAsync } from "../../../store/users/slices/usersSlice";
+import { Link } from "react-router-dom";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,6 @@ const AddUser = () => {
   });
 
   const onSubmit = (values) => {
-    console.log('values: ', values);
     dispatch(addUserAsync(values));
     reset();
   };
@@ -135,8 +134,7 @@ const AddUser = () => {
 
         <div className={style.buttonWrapper}>
           <button type="submit">Добавить</button>
-
-          <PagesNavButton buttonText="Назад" goTo="/users" />
+          <Link to="/users">Назад</Link>
         </div>
       </form>
     </div>

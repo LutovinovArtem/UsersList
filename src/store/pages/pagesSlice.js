@@ -29,7 +29,7 @@ const pagesSlice = createSlice({
   name: "pages",
   initialState: {
     totalPages: 1,
-    numberOfAllUsers: 1,
+    numberOfAllUsers: null,
     error: null,
   },
   extraReducers: {

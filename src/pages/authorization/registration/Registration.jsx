@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import style from "./registration.module.css";
 import { useForm } from "react-hook-form";
 import { registration } from "../../../store/authorization/registerSlice";
 import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
+import { useToggleShowPassword } from "../../../hooks/useToggleShowPassword";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 const Registration = () => {
+  // Compound Components ?
+  const [toggleButton, passwordType] = useToggleShowPassword();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -22,12 +26,6 @@ const Registration = () => {
   } = useForm({
     mode: "onBlur",
   });
-
-  // Compound Components
-  const [passwordShow, setPasswordShow] = useState(false);
-  const togglePassword = () => {
-    setPasswordShow(!passwordShow);
-  };
 
   return (
     <div className={style.formWrapper}>
@@ -63,7 +61,7 @@ const Registration = () => {
           Пароль:
           <br />
           <input
-            type={passwordShow ? "text" : "password"}
+            type={passwordType}
             {...register("password", {
               required: "Введите пароль!",
               minLength: 1,
@@ -73,9 +71,7 @@ const Registration = () => {
               },
             })}
           />
-          <button type="button" onClick={togglePassword}>
-            {passwordShow ? "Cкрыть" : "Показать"}
-          </button>
+          {toggleButton}
         </label>
 
         <div style={{ height: 20 }}>

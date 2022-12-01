@@ -15,7 +15,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* название */}
         <Route element={<CheckToken />}>
           <Route path="/" element={<Login />} />
           <Route path="/registration" element={<Registration />} />

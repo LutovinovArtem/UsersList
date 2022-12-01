@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import style from "./editUser.module.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
 import { useForm } from "react-hook-form";
 import { Loader } from "../../../components/loader/Loader";
 import { editUser } from "../../../store/users/slices/usersSlice";
@@ -18,7 +17,8 @@ const EditUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector(selectUser) || {};
+  const user = useSelector(selectUser);
+  console.log('user: ', user);
   const error = useSelector(selectUserError);
   const isLoading = useSelector(selectUserIsLoading);
 
@@ -43,10 +43,10 @@ const EditUser = () => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      email: user.email,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      avatar: user.avatar,
+      email: user?.email,
+      firstName: user?.first_name,
+      lastName: user?.last_name,
+      avatar: user?.avatar,
     },
   });
 
@@ -170,7 +170,7 @@ const EditUser = () => {
 
         <div className={style.buttonWrapper}>
           <button type="submit">Изменить</button>
-          <PagesNavButton buttonText="Назад" goTo="/users" />
+          <Link to="/users">Назад</Link>
         </div>
       </form>
     </div>

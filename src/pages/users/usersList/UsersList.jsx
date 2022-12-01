@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import style from "./usersList.module.css";
 import { Table, Space } from "antd";
 import { Loader } from "../../../components/loader/Loader";
-import { PagesNavButton } from "../../../components/Button/pagesNavButton/PagesNavButton";
+import { Link } from "react-router-dom";
 import { getUsers, deleteUser } from "../../../store/users/slices/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -16,8 +16,17 @@ import {
   // selectTotalPages,
   selectNumberOfAllUsers,
 } from "../../../store/pages/pagesSelectors";
+import { SearchOutlined } from "@ant-design/icons";
 
 const UsersList = () => {
+  const numberOfAllUsers = useSelector(selectNumberOfAllUsers);
+  // const totalPages = useSelector(selectTotalPages);
+  // const perPage = useSelector(selectPerPage);
+
+  // useEffect(() => {
+  //   dispatch(getPages());
+  // }, [numberOfAllUsers]);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,50 +34,159 @@ const UsersList = () => {
   const error = useSelector(reselectError);
   const isLoading = useSelector(reselectIsLoading);
 
-  const numberOfAllUsers = useSelector(selectNumberOfAllUsers);
-  // const totalPages = useSelector(selectTotalPages);
-  // const perPage = useSelector(selectPerPage);
-
   useEffect(() => {
-    dispatch(getUsers({ page: 1, per_page: 12 }));
+    dispatch(getUsers({ page: 1, per_page: numberOfAllUsers }));
     dispatch(getPages());
   }, []);
 
-  const handleDeleteClick = (id) => {
+  const removeUser = (id) => {
     dispatch(deleteUser(id));
   };
 
   const unLogin = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    navigate("/", { replace: true });
   };
+
+  const searchIcon = () => <SearchOutlined />;
 
   const columns = [
     {
-      title: "id",
+      title: "Id",
       dataIndex: "id",
-      key: "id",
+      filterIcon: searchIcon,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <input
+            autoFocus
+            placeholder="Фильтр по id"
+            value={selectedKeys[0] || []}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                confirm();
+              }
+            }}
+            onBlur={() => {
+              confirm();
+            }}
+          />
+        );
+      },
+      onFilter: (value, record) => {
+        return record.id
+          .toString()
+          .toLowerCase()
+          .includes(value.toString().toLowerCase());
+      },
+      sorter: (a, b) => a.id - b.id,
+      sortDirections: ['descend']
     },
     {
       title: "Почта",
       dataIndex: "email",
-      key: "email",
+      filterIcon: searchIcon,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <input
+            autoFocus
+            placeholder="Фильтр по email"
+            value={selectedKeys[0] || []}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                confirm();
+              }
+            }}
+            onBlur={() => {
+              confirm();
+            }}
+          />
+        );
+      },
+      onFilter: (value, record) => {
+        return record.email
+          .toString()
+          .toLowerCase()
+          .includes(value.toString().toLowerCase());
+      },
+      sorter: (a, b) => a.email.length - b.email.length,
+      sortDirections: ['descend']
     },
     {
       title: "Имя",
       dataIndex: "first_name",
-      key: "first_name",
+      filterIcon: searchIcon,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <input
+            autoFocus
+            placeholder="Фильтр по имени"
+            value={selectedKeys[0] || []}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                confirm();
+              }
+            }}
+            onBlur={() => {
+              confirm();
+            }}
+          />
+        );
+      },
+      onFilter: (value, record) => {
+        return record.first_name
+          .toString()
+          .toLowerCase()
+          .includes(value.toString().toLowerCase());
+      },
+      sorter: (a, b) => a.first_name.length - b.first_name.length,
+      sortDirections: ['descend']
     },
     {
       title: "Фамилия",
       dataIndex: "last_name",
-      key: "last_name",
+      filterIcon: searchIcon,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+        return (
+          <input
+            autoFocus
+            placeholder="Фильтр по фамилии"
+            value={selectedKeys[0] || []}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                confirm();
+              }
+            }}
+            onBlur={() => {
+              confirm();
+            }}
+          />
+        );
+      },
+      onFilter: (value, record) => {
+        return record.last_name
+          .toString()
+          .toLowerCase()
+          .includes(value.toString().toLowerCase());
+      },
+      sorter: (a, b) => a.last_name.length - b.last_name.length,
+      sortDirections: ['descend']
     },
     {
       title: "Аватар",
-      key: "avatar",
       dataIndex: "avatar",
-      render: (_, { avatar }) => <img src={avatar} alt="none" />,
+      render: (_, { avatar }) => <img src={avatar} alt={<Loader />} />,
     },
     {
       title: "Действия",
@@ -77,14 +195,10 @@ const UsersList = () => {
       render: (_, { id }) => (
         <Space size="middle">
           <div>
-            <PagesNavButton
-              buttonText="Редактировать"
-              goTo={`/users/edit/${id}`}
-            />
+            <Link to={`/users/edit/${id}`}>Редактировать</Link>
           </div>
-
           <div>
-            <button onClick={() => handleDeleteClick(id)}>Удалить</button>
+            <button onClick={() => removeUser(id)}>Удалить</button>
           </div>
         </Space>
       ),
@@ -105,7 +219,7 @@ const UsersList = () => {
 
       <div className={style.tableHeader}>
         <h1> Таблица пользователей </h1>
-        <PagesNavButton buttonText="Добавить" goTo="/users/add" />
+        <Link to="/users/add">Добавить</Link>
       </div>
 
       <Table
@@ -113,11 +227,7 @@ const UsersList = () => {
         columns={columns}
         rowKey="id"
         pagination={{
-          pageSize: 4, // кол-во элм на странице
-          total: numberOfAllUsers, // общее кол-во элм
-          // onChange: (page) => {
-          //   dispatch(getUsers({ page: 2, per_page: 6 }));
-          // },
+          pageSize: 3,
         }}
       />
     </>
