@@ -25,41 +25,10 @@ const Login = () => {
     mode: "onChange",
   });
 
-  // const { handleSubmit, control } = useForm();
-
+  
   return (
     <div className={style.formWrapper}>
-      {/* <h1> Авторизация </h1>
-      <section>
-        <label>Логин</label>
-        <br />
-        <Controller
-          // placeholder="AntD Input"
-          control={control}
-          name="Login"
-          render={({ field: {value, invalid} }) => <input {...field} />}
-        />
-      </section>
 
-      <section>
-        <label>Пароль</label>
-        <br />
-        <Controller
-          // placeholder="AntD Input"
-          control={control}
-          name="Password"
-          render={({ field }) => <input {...field} />}
-        />
-      </section>
-
-      <br />
-      <div className={style.buttonWrapper}>
-        {/* <button type="submit" disabled={!isValid}> */}
-        {/* <button type="submit">Авторизация</button>
-        <Link to="/registration">Регистрация</Link>
-      </div> */} 
-
-      {/* ////////////////////////////////////////////////////////////////////// */}
        <form onSubmit={handleSubmit(onSubmit)}>
         <h1> Авторизация </h1>
 
@@ -115,7 +84,7 @@ const Login = () => {
             </p>
           )}{" "}
         </div> 
-      {/* ////////////////////////////////////////////////////////////////////// */}
+
       <div className={style.buttonWrapper}>
           <button type="submit" disabled={!isValid}>
             Авторизация
@@ -128,3 +97,35 @@ const Login = () => {
 };
 
 export default Login;
+
+// const { handleSubmit, control } = useForm();
+
+{/* <h1> Авторизация </h1>
+<section>
+<label>Логин</label>
+<br />
+<Controller
+// placeholder="AntD Input"
+control={control}
+name="Login"
+render={({ field: {value, invalid} }) => <input {...field} />}
+/>
+</section>
+
+<section>
+<label>Пароль</label>
+<br />
+  <Controller
+    // placeholder="AntD Input"
+    control={control}
+    name="Password"
+    render={({ field }) => <input {...field} />}
+  />
+</section>
+
+<br />
+<div className={style.buttonWrapper}>
+  {/* <button type="submit" disabled={!isValid}> */}
+  {/* <button type="submit">Авторизация</button>
+  <Link to="/registration">Регистрация</Link>
+</div> */} 

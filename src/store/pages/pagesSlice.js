@@ -29,6 +29,7 @@ const pagesSlice = createSlice({
   name: "pages",
   initialState: {
     totalPages: 1,
+    perPage: 1,
     numberOfAllUsers: null,
     error: null,
   },
@@ -39,6 +40,7 @@ const pagesSlice = createSlice({
     [getPages.fulfilled]: (state, { payload }) => {
       state.totalPages = payload.total_pages;
       state.numberOfAllUsers = payload.total;
+      state.perPage = payload.per_page;
     },
     [getPages.rejected]: setError,
   },

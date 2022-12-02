@@ -1,31 +1,27 @@
 import React, { useEffect } from "react";
 import style from "./usersList.module.css";
-import { Table, Space } from "antd";
+import { Table, Space, Input, Button } from "antd";
 import { Loader } from "../../../components/loader/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUsers, deleteUser } from "../../../store/users/slices/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { getPages } from "../../../store/pages/pagesSlice";
+import { SearchOutlined } from "@ant-design/icons";
 import {
   reselectUsers,
   reselectError,
   reselectIsLoading,
 } from "../../../store/users/selectors/usersSelectors";
-import { getPages } from "../../../store/pages/pagesSlice";
 import {
+  // selectPerPage,
   // selectTotalPages,
   selectNumberOfAllUsers,
 } from "../../../store/pages/pagesSelectors";
-import { SearchOutlined } from "@ant-design/icons";
 
 const UsersList = () => {
   const numberOfAllUsers = useSelector(selectNumberOfAllUsers);
-  // const totalPages = useSelector(selectTotalPages);
   // const perPage = useSelector(selectPerPage);
-
-  // useEffect(() => {
-  //   dispatch(getPages());
-  // }, [numberOfAllUsers]);
+  // const totalPages = useSelector(selectTotalPages);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,10 +30,12 @@ const UsersList = () => {
   const error = useSelector(reselectError);
   const isLoading = useSelector(reselectIsLoading);
 
+  const PAGE_SIZE = 3;
+
   useEffect(() => {
-    dispatch(getUsers({ page: 1, per_page: numberOfAllUsers }));
+    dispatch(getUsers({ page: 0, per_page: 12 }));
     dispatch(getPages());
-  }, []);
+  }, [numberOfAllUsers]);
 
   const removeUser = (id) => {
     dispatch(deleteUser(id));
@@ -50,29 +48,63 @@ const UsersList = () => {
 
   const searchIcon = () => <SearchOutlined />;
 
+  const handleReset = (clearFilters, confirm) => {
+    clearFilters();
+    confirm();
+    // this.setState({ searchText: "" });
+  };
+
   const columns = [
     {
       title: "Id",
       dataIndex: "id",
+      key: "id",
       filterIcon: searchIcon,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
         return (
-          <input
-            autoFocus
-            placeholder="Фильтр по id"
-            value={selectedKeys[0] || []}
-            onChange={(e) => {
-              setSelectedKeys(e.target.value ? [e.target.value] : []);
-            }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
+          <div style={{ padding: 8 }}>
+            <Input
+              autoFocus
+              placeholder="Фильтр по id"
+              value={selectedKeys[0] || []}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+              }}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  confirm();
+                }
+              }}
+              onBlur={() => {
                 confirm();
-              }
-            }}
-            onBlur={() => {
-              confirm();
-            }}
-          />
+              }}
+            />
+            <br />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Поиск
+              </Button>
+
+              <Button
+                onClick={() => handleReset(clearFilters, confirm)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Сброс
+              </Button>
+            </Space>
+          </div>
         );
       },
       onFilter: (value, record) => {
@@ -82,30 +114,58 @@ const UsersList = () => {
           .includes(value.toString().toLowerCase());
       },
       sorter: (a, b) => a.id - b.id,
-      sortDirections: ['descend']
+      sortDirections: ["descend"],
     },
     {
       title: "Почта",
       dataIndex: "email",
+      key: "email",
       filterIcon: searchIcon,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
         return (
-          <input
-            autoFocus
-            placeholder="Фильтр по email"
-            value={selectedKeys[0] || []}
-            onChange={(e) => {
-              setSelectedKeys(e.target.value ? [e.target.value] : []);
-            }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
+          <div style={{ padding: 8 }}>
+            <Input
+              autoFocus
+              placeholder="Фильтр по email"
+              value={selectedKeys[0] || []}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+              }}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  confirm();
+                }
+              }}
+              onBlur={() => {
                 confirm();
-              }
-            }}
-            onBlur={() => {
-              confirm();
-            }}
-          />
+              }}
+            />
+            <br />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Поиск
+              </Button>
+
+              <Button
+                onClick={() => handleReset(clearFilters, confirm)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Сброс
+              </Button>
+            </Space>
+          </div>
         );
       },
       onFilter: (value, record) => {
@@ -115,30 +175,53 @@ const UsersList = () => {
           .includes(value.toString().toLowerCase());
       },
       sorter: (a, b) => a.email.length - b.email.length,
-      sortDirections: ['descend']
+      sortDirections: ["descend"],
     },
     {
       title: "Имя",
       dataIndex: "first_name",
+      key: "first_name",
       filterIcon: searchIcon,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
         return (
-          <input
-            autoFocus
-            placeholder="Фильтр по имени"
-            value={selectedKeys[0] || []}
-            onChange={(e) => {
-              setSelectedKeys(e.target.value ? [e.target.value] : []);
-            }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
+          <div style={{ padding: 8 }}>
+            <Input
+              autoFocus
+              placeholder="Фильтр по имени"
+              value={selectedKeys[0] || []}
+              onChange={(e) => {
+                setSelectedKeys(e.target.value ? [e.target.value] : []);
+              }}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  confirm();
+                }
+              }}
+              onBlur={() => {
                 confirm();
-              }
-            }}
-            onBlur={() => {
-              confirm();
-            }}
-          />
+              }}
+            />
+            <br />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Поиск
+              </Button>
+
+              <Button
+                onClick={() => handleReset(clearFilters, confirm)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Сброс
+              </Button>
+            </Space>
+          </div>
         );
       },
       onFilter: (value, record) => {
@@ -148,15 +231,17 @@ const UsersList = () => {
           .includes(value.toString().toLowerCase());
       },
       sorter: (a, b) => a.first_name.length - b.first_name.length,
-      sortDirections: ['descend']
+      sortDirections: ["descend"],
     },
     {
       title: "Фамилия",
       dataIndex: "last_name",
+      key: "last_name",
       filterIcon: searchIcon,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
         return (
-          <input
+          <div style={{ padding: 8 }}>
+          <Input
             autoFocus
             placeholder="Фильтр по фамилии"
             value={selectedKeys[0] || []}
@@ -172,6 +257,27 @@ const UsersList = () => {
               confirm();
             }}
           />
+          <br />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Поиск
+              </Button>
+
+              <Button
+                onClick={() => handleReset(clearFilters, confirm)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Сброс
+              </Button>
+            </Space>
+          </div>
         );
       },
       onFilter: (value, record) => {
@@ -181,17 +287,18 @@ const UsersList = () => {
           .includes(value.toString().toLowerCase());
       },
       sorter: (a, b) => a.last_name.length - b.last_name.length,
-      sortDirections: ['descend']
+      sortDirections: ["descend"],
     },
     {
       title: "Аватар",
       dataIndex: "avatar",
+      key: "avatar",
       render: (_, { avatar }) => <img src={avatar} alt={<Loader />} />,
     },
     {
       title: "Действия",
-      key: "action",
       dataIndex: "action",
+      key: "action",
       render: (_, { id }) => (
         <Space size="middle">
           <div>
@@ -227,7 +334,12 @@ const UsersList = () => {
         columns={columns}
         rowKey="id"
         pagination={{
-          pageSize: 3,
+          pageSize: PAGE_SIZE,
+          total: numberOfAllUsers,
+          // showSizeChanger: true,
+          // onChange: (page) => {
+          //   dispatch(getUsers({ page: page, per_page: PAGE_SIZE }));
+          // },
         }}
       />
     </>

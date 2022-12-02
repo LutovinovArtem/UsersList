@@ -18,16 +18,16 @@ const EditUser = () => {
   const navigate = useNavigate();
 
   const user = useSelector(selectUser);
-  console.log('user: ', user);
   const error = useSelector(selectUserError);
   const isLoading = useSelector(selectUserIsLoading);
 
   useEffect(() => {
+    // почему он заполняет поля ?
     reset({
-      email: user.email,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      avatar: user.avatar,
+      email: user?.email,
+      firstName: user?.first_name,
+      lastName: user?.last_name,
+      avatar: user?.avatar,
     });
   }, [user]);
 
@@ -42,12 +42,12 @@ const EditUser = () => {
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      email: user?.email,
-      firstName: user?.first_name,
-      lastName: user?.last_name,
-      avatar: user?.avatar,
-    },
+    // defaultValues: {
+    //   email: user.email,
+    //   firstName: user.first_name,
+    //   lastName: user.last_name,
+    //   avatar: user.avatar,
+    // },
   });
 
   const onSubmit = (value) => {
