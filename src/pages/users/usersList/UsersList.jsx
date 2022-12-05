@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./usersList.module.css";
 import { Table, Space, Input, Button } from "antd";
 import { Loader } from "../../../components/loader/Loader";
@@ -18,6 +18,8 @@ import {
   selectNumberOfAllUsers,
 } from "../../../store/pages/pagesSelectors";
 
+import { changeUsers } from "../../../store/users/slices/usersSlice";
+
 const UsersList = () => {
   const numberOfAllUsers = useSelector(selectNumberOfAllUsers);
   // const perPage = useSelector(selectPerPage);
@@ -35,7 +37,7 @@ const UsersList = () => {
   useEffect(() => {
     dispatch(getUsers({ page: 0, per_page: 12 }));
     dispatch(getPages());
-  }, [numberOfAllUsers]);
+  }, []);
 
   const removeUser = (id) => {
     dispatch(deleteUser(id));
@@ -51,7 +53,6 @@ const UsersList = () => {
   const handleReset = (clearFilters, confirm) => {
     clearFilters();
     confirm();
-    // this.setState({ searchText: "" });
   };
 
   const columns = [
@@ -67,21 +68,18 @@ const UsersList = () => {
         clearFilters,
       }) => {
         return (
-          <div style={{ padding: 8 }}>
+          <>
             <Input
               autoFocus
               placeholder="Фильтр по id"
-              value={selectedKeys[0] || []}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-              }}
+              value={selectedKeys}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   confirm();
                 }
-              }}
-              onBlur={() => {
-                confirm();
               }}
             />
             <br />
@@ -104,15 +102,13 @@ const UsersList = () => {
                 Сброс
               </Button>
             </Space>
-          </div>
+          </>
         );
       },
-      onFilter: (value, record) => {
-        return record.id
-          .toString()
-          .toLowerCase()
-          .includes(value.toString().toLowerCase());
+      onFilter: (value, { id }) => {
+        return String(id).toLowerCase().includes(String(value).toLowerCase());
       },
+
       sorter: (a, b) => a.id - b.id,
       sortDirections: ["descend"],
     },
@@ -128,21 +124,18 @@ const UsersList = () => {
         clearFilters,
       }) => {
         return (
-          <div style={{ padding: 8 }}>
+          <>
             <Input
               autoFocus
-              placeholder="Фильтр по email"
-              value={selectedKeys[0] || []}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-              }}
+              placeholder="Фильтр по почте"
+              value={selectedKeys}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   confirm();
                 }
-              }}
-              onBlur={() => {
-                confirm();
               }}
             />
             <br />
@@ -165,40 +158,42 @@ const UsersList = () => {
                 Сброс
               </Button>
             </Space>
-          </div>
+          </>
         );
       },
-      onFilter: (value, record) => {
-        return record.email
-          .toString()
+      onFilter: (value, { email }) => {
+        return String(email)
           .toLowerCase()
-          .includes(value.toString().toLowerCase());
+          .includes(String(value).toLowerCase());
       },
       sorter: (a, b) => a.email.length - b.email.length,
       sortDirections: ["descend"],
     },
+
     {
       title: "Имя",
       dataIndex: "first_name",
       key: "first_name",
       filterIcon: searchIcon,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
         return (
-          <div style={{ padding: 8 }}>
+          <>
             <Input
               autoFocus
               placeholder="Фильтр по имени"
-              value={selectedKeys[0] || []}
-              onChange={(e) => {
-                setSelectedKeys(e.target.value ? [e.target.value] : []);
-              }}
+              value={selectedKeys}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   confirm();
                 }
-              }}
-              onBlur={() => {
-                confirm();
               }}
             />
             <br />
@@ -221,14 +216,13 @@ const UsersList = () => {
                 Сброс
               </Button>
             </Space>
-          </div>
+          </>
         );
       },
-      onFilter: (value, record) => {
-        return record.first_name
-          .toString()
+      onFilter: (value, { first_name }) => {
+        return String(first_name)
           .toLowerCase()
-          .includes(value.toString().toLowerCase());
+          .includes(String(value).toLowerCase());
       },
       sorter: (a, b) => a.first_name.length - b.first_name.length,
       sortDirections: ["descend"],
@@ -238,26 +232,28 @@ const UsersList = () => {
       dataIndex: "last_name",
       key: "last_name",
       filterIcon: searchIcon,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
         return (
-          <div style={{ padding: 8 }}>
-          <Input
-            autoFocus
-            placeholder="Фильтр по фамилии"
-            value={selectedKeys[0] || []}
-            onChange={(e) => {
-              setSelectedKeys(e.target.value ? [e.target.value] : []);
-            }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                confirm();
+          <>
+            <Input
+              autoFocus
+              placeholder="Фильтр по фамилии"
+              value={selectedKeys}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
               }
-            }}
-            onBlur={() => {
-              confirm();
-            }}
-          />
-          <br />
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  confirm();
+                }
+              }}
+            />
+            <br />
             <Space>
               <Button
                 type="primary"
@@ -277,14 +273,13 @@ const UsersList = () => {
                 Сброс
               </Button>
             </Space>
-          </div>
+          </>
         );
       },
-      onFilter: (value, record) => {
-        return record.last_name
-          .toString()
+      onFilter: (value, { last_name }) => {
+        return String(last_name)
           .toLowerCase()
-          .includes(value.toString().toLowerCase());
+          .includes(String(value).toLowerCase());
       },
       sorter: (a, b) => a.last_name.length - b.last_name.length,
       sortDirections: ["descend"],
@@ -312,6 +307,10 @@ const UsersList = () => {
     },
   ];
 
+  const [value, setValue] = useState();
+
+  const handleChangeSearch = (e) => setValue(e.target.value);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -327,6 +326,34 @@ const UsersList = () => {
       <div className={style.tableHeader}>
         <h1> Таблица пользователей </h1>
         <Link to="/users/add">Добавить</Link>
+      </div>
+
+      <div style={{ marginBottom: 10 }}>
+        <Input.Search
+          placeholder="Поиск"
+          value={value}
+          onChange={handleChangeSearch}
+          onPressEnter={() => {
+            const filteredResults = users.filter((user) => {
+              return (
+                String(value).toLowerCase() === String(user.id).toLowerCase() ||
+                String(value).toLowerCase() ===
+                  String(user.email).toLowerCase() ||
+                String(value).toLowerCase() ===
+                  String(user.first_name).toLowerCase() ||
+                String(value).toLowerCase() ===
+                  String(user.last_name).toLowerCase()
+              );
+            });
+
+            if (filteredResults.length) {
+              dispatch(changeUsers(filteredResults));
+            }
+            if (filteredResults.length === 0) {
+              dispatch(getUsers());
+            }
+          }}
+        />
       </div>
 
       <Table

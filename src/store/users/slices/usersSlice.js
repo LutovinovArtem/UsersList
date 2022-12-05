@@ -68,7 +68,7 @@ export const editUser = createAsyncThunk(
         throw new Error("Error");
       }
 
-      dispatch(changeUser({...value, id}));
+      dispatch(changeUser({ ...value, id }));
     } catch (error) {
       return rejectWithValue(`editUser - ${error.message}`);
     }
@@ -89,6 +89,10 @@ const usersSlice = createSlice({
     error: null,
   },
   reducers: {
+    changeUsers: (state, { payload }) => {
+      console.log("payload: ", payload);
+      state.users = payload;
+    },
     removeUser: (state, { payload }) => {
       state.users = state.users.filter((user) => user.id !== payload);
     },
@@ -119,6 +123,7 @@ const usersSlice = createSlice({
   },
 });
 
-const { removeUser, addUser, changeUser } = usersSlice.actions;
+export const { removeUser, addUser, changeUser, changeUsers } =
+  usersSlice.actions;
 
 export default usersSlice.reducer;
